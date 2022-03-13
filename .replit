@@ -1,0 +1,8 @@
+language = "go"
+run = "go build ."
+
+[languages.go]
+pattern = "**/*.go"
+
+[languages.go.languageServer]
+start = "gopls"

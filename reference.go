@@ -1,4 +1,4 @@
-// Package reference is a Ponzu addon to enable content editors to create
+// Package reference is an Instio addon to enable content editors to create
 // references to other content types which are stored as query strings within
 // the referencer's content DB
 package reference
@@ -13,14 +13,14 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/ponzu-cms/ponzu/management/editor"
-	"github.com/ponzu-cms/ponzu/system/addon"
+	"github.com/DeviaVir/instio/pkg/management/editor"
+	"github.com/DeviaVir/instio/pkg/system/addon"
 )
 
 // Select returns the []byte of a <select> HTML element plus internal <options> with a label.
 // IMPORTANT:
 // The `fieldName` argument will cause a panic if it is not exactly the string
-// form of the struct field that this editor input is representing
+// form of the struct field that this editor input is representing.
 func Select(fieldName string, p interface{}, attrs map[string]string, contentType, tmplString string) []byte {
 	options, err := encodeDataToOptions(contentType, tmplString)
 	if err != nil {
@@ -40,7 +40,7 @@ func Select(fieldName string, p interface{}, attrs map[string]string, contentTyp
 func SelectRepeater(fieldName string, p interface{}, attrs map[string]string, contentType, tmplString string) []byte {
 	scope := editor.TagNameFromStructField(fieldName, p)
 	html := bytes.Buffer{}
-	_, err := html.WriteString(`<span class="__ponzu-repeat ` + scope + `">`)
+	_, err := html.WriteString(`<span class="__instio-repeat ` + scope + `">`)
 	if err != nil {
 		log.Println("Error writing HTML string to SelectRepeater buffer")
 		return nil
@@ -54,7 +54,7 @@ func SelectRepeater(fieldName string, p interface{}, attrs map[string]string, co
 
 	// find the field values in p to determine if an option is pre-selected
 	fieldVals := editor.ValueFromStructField(fieldName, p)
-	vals := strings.Split(fieldVals, "__ponzu")
+	vals := strings.Split(fieldVals, "__instio")
 
 	options, err := encodeDataToOptions(contentType, tmplString)
 	if err != nil {
@@ -87,14 +87,14 @@ func SelectRepeater(fieldName string, p interface{}, attrs map[string]string, co
 		// order the options by value
 		orderedOptions := make([]string, 0, len(options))
 		for k, v := range options {
-			orderedOptions = append(orderedOptions, fmt.Sprintf("%s__ponzu__order%s", v, k))
+			orderedOptions = append(orderedOptions, fmt.Sprintf("%s__instio__order%s", v, k))
 		}
 		sort.Strings(orderedOptions)
 
 		// construct editor elements array from option items
 		for _, v := range orderedOptions {
 			// get key value pair from ordered string
-			vkPair := strings.Split(v, "__ponzu__order")
+			vkPair := strings.Split(v, "__instio__order")
 			if len(vkPair) < 2 {
 				continue
 			}
